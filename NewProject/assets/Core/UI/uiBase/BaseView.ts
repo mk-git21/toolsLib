@@ -56,7 +56,7 @@ export abstract class BaseView extends Component {
     //region 事件处理
 
     private RemoveAllEvent() {
-        for(let event of this.eventList){
+        for (let event of this.eventList) {
             this.RemoveEvent(event);
         }
     }
@@ -65,9 +65,8 @@ export abstract class BaseView extends Component {
      * 移除注册的事件
      * @param event 
      */
-    public RemoveEvent(event:EventItem){
-        
-        EventManger.GetIns().
+    public RemoveEvent(event: EventItem) {
+        EventManger.GetIns().Off(event.eventName, this);
     }
 
 

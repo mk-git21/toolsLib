@@ -3,24 +3,24 @@ import { Singleton } from '../base/Singleton';
 
 
 
-export class EventManger extends Singleton {
+export class EventManger extends Singleton<EventManger>() {
 
     /**事件存储 */
     eventDir: Map<string, Array<EventItem>> = new Map();
 
     On(eventKey: string, eventFun: Function, ctx: unknown) {
         if (this.eventDir.has(eventKey)) {
-            this.eventDir.get(eventKey).push({ fun: eventFun, ctx: ctx });
+            this.eventDir.get(eventKey).push({ eventName: eventKey, fun: eventFun, ctx: ctx });
         } else {
-            this.eventDir.set(eventKey, [{ fun: eventFun, ctx: ctx }]);
+            this.eventDir.set(eventKey, [{ eventName: eventKey, fun: eventFun, ctx: ctx }]);
         }
     }
 
     Once(eventKey: string, eventFun: Function, ctx: unknown) {
         if (this.eventDir.has(eventKey)) {
-            this.eventDir.get(eventKey).push({ fun: eventFun, ctx: ctx, once: true });
+            this.eventDir.get(eventKey).push({ eventName: eventKey, fun: eventFun, ctx: ctx, once: true });
         } else {
-            this.eventDir.set(eventKey, [{ fun: eventFun, ctx: ctx, once: true }]);
+            this.eventDir.set(eventKey, [{ eventName: eventKey, fun: eventFun, ctx: ctx, once: true }]);
         }
     }
 
@@ -70,6 +70,7 @@ export class EventManger extends Singleton {
 }
 
 export interface EventItem {
+    eventName: string,
     fun: Function,
     ctx: unknown,
     once?: boolean
