@@ -33,7 +33,7 @@
 export function Singleton<T>() {
     class SingletonT {
         protected constructor() {}
-        protected static _ins: SingletonT = null;
+        private static _ins: SingletonT = null;
         public static GetIns(): T {
             if (SingletonT._ins == null) {
                 SingletonT._ins = new this();
