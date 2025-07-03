@@ -1,6 +1,7 @@
-import { Button, Component, Label, Node, Sprite } from "cc";
+import { Button, Component, Label, Node, Sprite, UI } from "cc";
 import { ViewType } from "../../enum/CoreEnum";
 import { EventItem, EventManger } from "../../event/EventManger";
+import { UIManger } from "../UIManger";
 
 export abstract class BaseView extends Component {
     /**页面类型 */
@@ -19,6 +20,8 @@ export abstract class BaseView extends Component {
     protected view: { [key: string]: Node } = {};
     /**ui注册事件存储 */
     private eventList: EventItem[] = [];
+    /**当前界面ui标识 */
+    public uiSign: string = "";
 
     protected onLoad(): void {
         this.view = {};
@@ -29,6 +32,16 @@ export abstract class BaseView extends Component {
 
     protected onDestroy(): void {
         this.RemoveAllEvent();
+    }
+
+    /**
+     * 关闭当前界面
+     * @param isDestroy 是否销毁
+     * @param callBack 关闭后的回调
+     * @param callBackTarget 回调对象
+     */
+    protected onClose(isDestroy: boolean = true, callBack: Function = null, callBackTarget: unknown = null): void {
+        UIManger.GetIns().CloseUI(this.uiSign, isDestroy, callBack, callBackTarget);
     }
 
     /**
@@ -86,19 +99,8 @@ export abstract class BaseView extends Component {
      * @param fun 
      * @param target 
      */
-    protected AddButtonByCom(viewName: string|Node, fun: Function, target: unknown): void {
-        let buttonCom = this._getCompont(viewName,Button);
-        // let node = this.view[viewName];
-        // if (!node) {
-        //     console.error("按钮绑定没有找到对应节点：" + `AddButtonByCom:${viewName}`);
-        //     return
-        // }
-
-        // let buttonCom = node.getComponent(Button);
-        // if (!buttonCom) {
-        //     console.error("按钮没有挂载按钮组件：" + `AddButtonByCom:${viewName}`);
-        //     return
-        // }
+    protected AddButtonByCom(viewName: string | Node, fun: Function, target: unknown): void {
+        let buttonCom = this._getCompont(viewName, Button);
         let node = buttonCom.node;
         node.off(Button.EventType.CLICK);
         node.on(Button.EventType.CLICK, fun, target);
@@ -111,8 +113,8 @@ export abstract class BaseView extends Component {
      * @param viewName string|Node
      * @param str 
      */
-    protected setLabel(viewName: string|Node, str: string): void {
-        let labelCom = this._getCompont(viewName,Label);
+    protected setLabel(viewName: string | Node, str: string): void {
+        let labelCom = this._getCompont(viewName, Label);
         labelCom.string = str;
     }
 
