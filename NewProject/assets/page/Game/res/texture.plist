@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>frames</key>
+    <dict>
+      <key>R-C (1).jpg</key>
+      <dict>
+        <key>frame</key>
+        <string>{{0,0},{1680,1050}}</string>
+        <key>offset</key>
+        <string>{0,0}</string>
+        <key>rotated</key>
+        <false/>
+        <key>sourceColorRect</key>
+        <string>{{0,0},{1680,1050}}</string>
+        <key>sourceSize</key>
+        <string>{1680,1050}</string>
+      </dict>
+      <key>R-C.jpg</key>
+      <dict>
+        <key>frame</key>
+        <string>{{0,1050},{1200,800}}</string>
+        <key>offset</key>
+        <string>{0,0}</string>
+        <key>rotated</key>
+        <false/>
+        <key>sourceColorRect</key>
+        <string>{{0,0},{1200,800}}</string>
+        <key>sourceSize</key>
+        <string>{1200,800}</string>
+      </dict>
+    </dict>
+    <key>metadata</key>
+    <dict>
+      <key>format</key>
+      <integer>2</integer>
+      <key>pixelFormat</key>
+      <string>RGBA8888</string>
+      <key>premultiplyAlpha</key>
+      <false/>
+      <key>realTextureFileName</key>
+      <string>texture.png</string>
+      <key>size</key>
+      <string>{1680,1850}</string>
+      <key>textureFileName</key>
+      <string>texture</string>
+    </dict>
+  </dict>
+</plist>

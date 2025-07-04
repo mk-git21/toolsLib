@@ -25,13 +25,24 @@ export class GamePage extends BaseView {
         this.clickNum++;
         if (this.clickNum % 2 == 0) {
             let sprite = this._getCompont("_sprite", Sprite);
-            const asset = await ResManger.GetIns().LoadResByUrl("Game", "res/R-C/spriteFrame", SpriteFrame, null, null, this.uiSign);
-            sprite.spriteFrame = asset as SpriteFrame;
+            ResManger.GetIns().LoadSpriteFrameInAtlas("Game", "res/texture", "R-C", ((asset: SpriteFrame) => {
+                sprite.spriteFrame = asset;
+            }), this, this.uiSign);
         } else {
             let sprite = this._getCompont("_sprite", Sprite);
-            const asset = await ResManger.GetIns().LoadResByUrl("Game", "res/R-C1/spriteFrame", SpriteFrame, null, null, this.uiSign);
-            sprite.spriteFrame = asset as SpriteFrame;
+            ResManger.GetIns().LoadSpriteFrameInAtlas("Game", "res/texture", "R-C (1)", ((asset: SpriteFrame) => {
+                sprite.spriteFrame = asset;
+            }), this, this.uiSign);
         }
+        // if (this.clickNum % 2 == 0) {
+        //     let sprite = this._getCompont("_sprite", Sprite);
+        //     const asset = await ResManger.GetIns().LoadResByUrl("Game", "res/R-C/spriteFrame", SpriteFrame, null, null, this.uiSign);
+        //     sprite.spriteFrame = asset as SpriteFrame;
+        // } else {
+        //     let sprite = this._getCompont("_sprite", Sprite);
+        //     const asset = await ResManger.GetIns().LoadResByUrl("Game", "res/R-C1/spriteFrame", SpriteFrame, null, null, this.uiSign);
+        //     sprite.spriteFrame = asset as SpriteFrame;
+        // }
 
     }
 

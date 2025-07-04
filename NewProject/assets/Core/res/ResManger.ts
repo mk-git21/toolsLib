@@ -67,6 +67,9 @@ export class ResManger extends Singleton<ResManger>() {
             //检查是否有缓存可用
             let cacheAssetItem = this.GetCacheItem(cacheItem)
             if (cacheAssetItem) {
+                if (onSucc) {
+                    onSucc.apply(target, [cacheAssetItem.asset]);
+                }
                 resolve(cacheAssetItem.asset);
                 return
             }
@@ -120,6 +123,9 @@ export class ResManger extends Singleton<ResManger>() {
             let cacheAssetItem = this.GetCacheItem(cacheItem)
             if (cacheAssetItem) {
                 let atlasAsset = cacheAssetItem.asset as SpriteAtlas;
+                if (onSucc) {
+                    onSucc.apply(target, [atlasAsset.getSpriteFrame(spriteName)]);
+                }
                 return atlasAsset.getSpriteFrame(spriteName);
             }
             //没有缓存时加载资源
