@@ -1,4 +1,4 @@
-import { __private, _decorator, assert, Asset, AssetManager, assetManager } from 'cc';
+import { __private, _decorator, assert, Asset, AssetManager, assetManager, SpriteAtlas, SpriteFrame } from 'cc';
 import { Singleton } from '../base/Singleton';
 const { ccclass, property } = _decorator;
 
@@ -56,29 +56,28 @@ export class ResManger extends Singleton<ResManger>() {
         target: unknown,
         prefabSign: string,
     ): Promise<Asset> {
-        //提前创建当前资源类实例
-        let cacheItem: CacheAssetItem = new CacheAssetItem({
-            bundleName: bundleName,
-            resUrl: resUrl,
-            assetType: assetType,
-            prefabSign: prefabSign
-        })
-        //检查是否有缓存可用
-        let cacheAssetItem = this.GetCacheItem(cacheItem)
-        if (cacheAssetItem) {
-            return cacheAssetItem.asset;
-        }
-        //没有缓存时加载资源
-        return await new Promise<Asset>((resolve, reject) => {
+        return new Promise<Asset>((resolve, reject) => {
+            //提前创建当前资源类实例
+            let cacheItem: CacheAssetItem = new CacheAssetItem({
+                bundleName: bundleName,
+                resUrl: resUrl,
+                assetType: assetType,
+                prefabSign: prefabSign
+            })
+            //检查是否有缓存可用
+            let cacheAssetItem = this.GetCacheItem(cacheItem)
+            if (cacheAssetItem) {
+                resolve(cacheAssetItem.asset);
+                return
+            }
+            //没有缓存时加载资源
             let bundleFun = (err: Error, bundle: AssetManager.Bundle) => {
                 if (err || !bundle) {
                     reject(err);
-                    return null
                 }
                 bundle.load(resUrl, assetType, (err: Error, asset: Asset) => {
                     if (err) {
                         reject(err);
-                        return null
                     }
                     if (onSucc) {
                         onSucc.apply(target, [asset]);
@@ -86,6 +85,60 @@ export class ResManger extends Singleton<ResManger>() {
                     cacheItem.asset = asset
                     this.resLoadSucc(cacheItem, prefabSign);
                     resolve(asset);
+                })
+            }
+            this.LoadBundle(bundleName, bundleFun, this);
+        })
+    }
+
+    /**
+     * 加载图集的图片,此时保存的资源为图集
+     * @param bundleName 
+     * @param atlasUrl 
+     * @param spriteName 
+     * @param onSucc 
+     * @param target 
+     * @param prefabSign
+     */
+    public async LoadSpriteFrameInAtlas(
+        bundleName: string,
+        atlasUrl: string,
+        spriteName: string,
+        onSucc: Function,
+        target: unknown,
+        prefabSign: string
+    ): Promise<SpriteFrame> {
+        return await new Promise<SpriteFrame>((resolve, reject) => {
+            //提前创建当前资源类实例
+            let cacheItem: CacheAssetItem = new CacheAssetItem({
+                bundleName: bundleName,
+                resUrl: atlasUrl,
+                assetType: SpriteAtlas,
+                prefabSign: prefabSign
+            })
+            //检查是否有缓存可用
+            let cacheAssetItem = this.GetCacheItem(cacheItem)
+            if (cacheAssetItem) {
+                let atlasAsset = cacheAssetItem.asset as SpriteAtlas;
+                return atlasAsset.getSpriteFrame(spriteName);
+            }
+            //没有缓存时加载资源
+            let bundleFun = (err: Error, bundle: AssetManager.Bundle) => {
+                if (err || !bundle) {
+                    reject(err);
+                    return null
+                }
+                bundle.load(atlasUrl, SpriteAtlas, (err: Error, asset: SpriteAtlas) => {
+                    if (err) {
+                        reject(err);
+                        return null
+                    }
+                    if (onSucc) {
+                        onSucc.apply(target, [asset.getSpriteFrame(spriteName)]);
+                    }
+                    cacheItem.asset = asset
+                    this.resLoadSucc(cacheItem, prefabSign);
+                    resolve(asset.getSpriteFrame(spriteName));
                 })
             }
             this.LoadBundle(bundleName, bundleFun, this);
@@ -151,13 +204,9 @@ export class ResManger extends Singleton<ResManger>() {
      * 从当前的加载的缓存中获取资源
      * @param cacheItem 
      */
-    private GetCacheItem(cacheItem: CacheAssetItem): CacheAssetItem | null {
-        this._uiWithAsset[cacheItem.prefabSign]?.forEach((item) => {
-            if (item.compare(cacheItem)) {
-                return item;
-            }
-        });
-        return null;
+    private GetCacheItem(cacheItem: CacheAssetItem): CacheAssetItem | undefined {
+        const a = this._uiWithAsset[cacheItem.prefabSign]?.find((item) => item.compare(cacheItem));
+        return a;
     }
 }
 
