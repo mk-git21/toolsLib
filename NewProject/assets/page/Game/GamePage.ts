@@ -19,6 +19,8 @@ export class GamePage extends BaseView {
             this.onClose()
         }), this)
         this.AddButtonByCom("_Button2", this.changeSprite, this)
+        this.AddButtonByCom("_Button3", this.checkResolve, this)
+        this.AddButtonByCom("_Button4", this.checkReject, this)
     }
     private clickNum: number = 0;
     async changeSprite() {
@@ -34,15 +36,29 @@ export class GamePage extends BaseView {
                 sprite.spriteFrame = asset;
             }), this, this.uiSign);
         }
-        // if (this.clickNum % 2 == 0) {
-        //     let sprite = this._getCompont("_sprite", Sprite);
-        //     const asset = await ResManger.GetIns().LoadResByUrl("Game", "res/R-C/spriteFrame", SpriteFrame, null, null, this.uiSign);
-        //     sprite.spriteFrame = asset as SpriteFrame;
-        // } else {
-        //     let sprite = this._getCompont("_sprite", Sprite);
-        //     const asset = await ResManger.GetIns().LoadResByUrl("Game", "res/R-C1/spriteFrame", SpriteFrame, null, null, this.uiSign);
-        //     sprite.spriteFrame = asset as SpriteFrame;
-        // }
+
+    }
+
+    async checkResolve() {
+        let str =await  new Promise((resolve, reject) => {
+            resolve("成功checkResolve");
+            console.log("成功");
+        }).then((str) =>{
+            str;
+            // return str;
+        })
+        console.log("打印"+str);
+        
+    }
+
+    async checkReject() {
+        let str = await new Promise((resolve, reject) => {
+            reject("失败");
+            console.log("失败");
+            resolve("成功");
+            console.log("成功");
+        })
+        console.log("打印"+str);
 
     }
 
