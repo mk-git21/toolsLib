@@ -43,10 +43,7 @@ export class GamePage extends BaseView {
         let str =await  new Promise((resolve, reject) => {
             resolve("成功checkResolve");
             console.log("成功");
-        }).then((str) =>{
-            str;
-            // return str;
-        })
+        }).then()
         console.log("打印"+str);
         
     }
@@ -57,7 +54,7 @@ export class GamePage extends BaseView {
             console.log("失败");
             resolve("成功");
             console.log("成功");
-        })
+        }).catch()
         console.log("打印"+str);
 
     }

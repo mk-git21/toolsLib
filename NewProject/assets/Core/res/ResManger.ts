@@ -16,18 +16,18 @@ export class ResManger extends Singleton<ResManger>() {
      * @param bundleName 
      * @param resUrl 
      * @param assetType 
-     * @param onSucc 
+     * @param onComplete 
      * @param target 
      */
     public async LoadResByUrl<T extends Asset>(
         bundleName: string,
         resUrl: string,
         assetType: { new(...args: any[]): T } | null,
-        onSucc: Function,
+        onComplete: Function,
         target: unknown,
         prefabSign: string,
     ): Promise<T> {
-        return this.LoadResource(bundleName, resUrl, assetType, onSucc, target, prefabSign);
+        return this.LoadResource(bundleName, resUrl, assetType, onComplete, target, prefabSign);
     }
 
     /**
@@ -35,7 +35,7 @@ export class ResManger extends Singleton<ResManger>() {
      * @param bundleName 
      * @param atlasUrl 
      * @param spriteName 
-     * @param onSucc 
+     * @param onComplete 
      * @param target 
      * @param prefabSign
      */
@@ -43,13 +43,13 @@ export class ResManger extends Singleton<ResManger>() {
         bundleName: string,
         atlasUrl: string,
         spriteName: string,
-        onSucc: Function,
+        onComplete: Function,
         target: unknown,
         prefabSign: string
     ): Promise<SpriteFrame> {
         return this.LoadResource(bundleName, atlasUrl, SpriteAtlas, (asset: SpriteAtlas) => {
-            if (onSucc) {
-                onSucc.apply(target, [asset.getSpriteFrame(spriteName)]);
+            if (onComplete) {
+                onComplete.apply(target, [asset.getSpriteFrame(spriteName)]);
             }
         }, target, prefabSign).then((asset: SpriteAtlas) => {
             return asset.getSpriteFrame(spriteName);
@@ -61,14 +61,14 @@ export class ResManger extends Singleton<ResManger>() {
      * @param bundleName 
      * @param resUrl 
      * @param assetType 
-     * @param onSucc 
+     * @param onComplete 
      * @param target 
      */
     public async LoadResource<T extends Asset>(
         bundleName: string,
         resUrl: string,
         assetType: { new(...args: any[]): T } | null,
-        onSucc: Function,
+        onComplete: Function,
         target: unknown,
         prefabSign: string,
     ): Promise<T> {
@@ -77,13 +77,15 @@ export class ResManger extends Singleton<ResManger>() {
             let bundleFun = (err: Error, bundle: AssetManager.Bundle) => {
                 if (err || !bundle) {
                     reject(err);
+                    return;
                 }
                 bundle.load(resUrl, assetType, (err: Error, asset: T) => {
                     if (err) {
                         reject(err);
+                        return;
                     }
-                    if (onSucc) {
-                        onSucc.apply(target, [asset]);
+                    if (onComplete) {
+                        onComplete.apply(target, [asset]);
                     }
                     //设置缓存记录
                     this.SetCacheRecord(asset, prefabSign);
@@ -92,6 +94,14 @@ export class ResManger extends Singleton<ResManger>() {
                 })
             }
             this.LoadBundle(bundleName, bundleFun, this);
+        }).catch((err) => {
+            //资源加载失败提供给await处理后的值
+            //失败时回调返回null
+            if (onComplete) {
+                onComplete.apply(target, [null]);
+            }
+            console.error("资源加载失败：" + bundleName + resUrl + assetType,`错误：${err}`);
+            return null;
         })
     }
 
