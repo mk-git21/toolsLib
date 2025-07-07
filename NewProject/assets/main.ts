@@ -1,6 +1,7 @@
 import { _decorator, Component, director, Node, Scene } from 'cc';
 import { UIManger } from './Core/ui/UIManger';
-import { GamePage } from './page/Game/GamePage';
+import { GamePage } from './GameUI/Game/GamePage';
+
 const { ccclass, property } = _decorator;
 
 @ccclass('main')
