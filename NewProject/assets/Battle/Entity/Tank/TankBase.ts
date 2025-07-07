@@ -1,9 +1,9 @@
 import { _decorator } from 'cc';
 const { ccclass, property } = _decorator;
 
-@ccclass('TankEntity')
-export class TankEntity {
-    /**战车id */
+@ccclass('TankBase')
+export class TankBase  {
+     /**战车id */
     private _id: number = 0;
     /**战车基础血量 */
     private _baseHp: number = 100;
@@ -130,8 +130,6 @@ class TankWeapon {
         this._attackRange = attackRange;
         this._bulletLimitNum = bulletLimitNum;
     }
-
-
 }
 
 enum WeaponState {
